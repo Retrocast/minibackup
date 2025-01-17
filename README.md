@@ -36,8 +36,10 @@ dest = "docs"
 respect_gitignore = true
 # Whether to skip hidden files (ones starting with dot). Optional, defaults to false.
 skip_hidden = false
-# Gitignore-like list of files/directories to exclude. Due to how library works, inversion with ! is not available. Optional.
+# Gitignore-like list of files/directories to exclude. Due to how `ignore` crate works, inversion with ! is not available. Optional.
 exclude = ["*.pdf"]
+# Max file size in bytes.
+max_file_size = 10e6 # 10 MB / 9.5 MiB
 
 [[sources]]
 # Archives a single file.
