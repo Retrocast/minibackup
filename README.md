@@ -32,7 +32,7 @@ type = "directory"
 path = "/home/user/Documents"
 # Where to put directory in archive. Directories in path are supported too. Optional, defaults to base folder name in archive root (e.g. "/Documents" in this example).
 dest = "docs"
-# Whether to follow .gitignore files when traversing directory. Optional, defaults to true.
+# Whether to respect .gitignore files when traversing directory (e.g. do not add gitignored files to archive). Optional, defaults to true.
 respect_gitignore = true
 # Whether to skip hidden files (ones starting with dot). Optional, defaults to false.
 skip_hidden = false
