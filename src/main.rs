@@ -1,6 +1,4 @@
-use std::{fs, path::PathBuf};
-
-use config::Source;
+use std::fs;
 
 mod config;
 mod output;
@@ -25,37 +23,7 @@ fn main() {
         .unwrap();
     let mut zip = zip::ZipWriter::new(file);
     for x in cfg.sources {
-        let opts = (&options).clone();
-        match x {
-            Source::Command { cmd, dest } => {
-                sources::command::archive_source(&cmd, dest, &mut zip, opts);
-            }
-            Source::Directory {
-                path,
-                dest,
-                respect_gitignore,
-                skip_hidden,
-                exclude,
-            } => {
-                sources::directory::archive_source(
-                    &path,
-                    dest.unwrap_or_else(|| PathBuf::from(path.file_name().unwrap())),
-                    respect_gitignore,
-                    skip_hidden,
-                    exclude.unwrap_or_else(|| vec![]),
-                    &mut zip,
-                    opts,
-                );
-            }
-            Source::File { path, dest } => {
-                sources::file::archive_source(
-                    &path,
-                    dest.unwrap_or_else(|| PathBuf::from(path.file_name().unwrap())),
-                    &mut zip,
-                    opts,
-                );
-            }
-        }
+        sources::archive_source(x, &mut zip, options.clone());
     }
     zip.finish().unwrap();
 }

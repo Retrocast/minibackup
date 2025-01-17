@@ -6,7 +6,7 @@ use serde::Deserialize;
 pub struct Config {
     #[serde(default)]
     pub archive: ArchiveConfig,
-    pub sources: Vec<Source>,
+    pub sources: Vec<SourceConfig>,
 }
 
 fn default_archive_dest() -> PathBuf {
@@ -34,24 +34,38 @@ fn default_true() -> bool {
     true
 }
 
+fn default_empty() -> Vec<String> {
+    vec![]
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(tag = "type", rename_all = "lowercase")]
-pub enum Source {
-    Command {
-        cmd: String,
-        dest: PathBuf,
-    },
-    Directory {
-        path: PathBuf,
-        dest: Option<PathBuf>,
-        #[serde(default = "default_true")]
-        respect_gitignore: bool,
-        #[serde(default)]
-        skip_hidden: bool,
-        exclude: Option<Vec<String>>,
-    },
-    File {
-        path: PathBuf,
-        dest: Option<PathBuf>,
-    },
+pub enum SourceConfig {
+    Command(CommandSourceConfig),
+    Directory(DirectorySourceConfig),
+    File(FileSourceConfig),
+}
+
+#[derive(Deserialize, Debug)]
+pub struct CommandSourceConfig {
+    pub cmd: String,
+    pub dest: PathBuf,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct DirectorySourceConfig {
+    pub path: PathBuf,
+    pub dest: Option<PathBuf>,
+    #[serde(default = "default_true")]
+    pub respect_gitignore: bool,
+    #[serde(default)]
+    pub skip_hidden: bool,
+    #[serde(default = "default_empty")]
+    pub exclude: Vec<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct FileSourceConfig {
+    pub path: PathBuf,
+    pub dest: Option<PathBuf>,
 }
