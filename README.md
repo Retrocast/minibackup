@@ -2,17 +2,27 @@
 
 Small Rust program I made to backup my files.
 
+## Installation
+
+1. Clone the repository.  
+   `git clone https://github.com/Retrocast/minibackup.git && cd minibackup`
+2. Build the project.  
+   `cargo build --release`
+3. Put the binary (`target/release/minibackup`) somewhere like `~/opt/minibackup`.
+4. Create config file in same directory as binary. You can use example from below to make the config file.
+5. When you want to make a backup, just run the binary in that directory.
+
 ## Configuration
 
 Program loads configuration from `config.toml` in current directory.
-Config has the following structure:
+Example config file:
 
 ```toml
 [archive]
 # If set to true, you will be prompted to enter a password which will be used to encrypt the archive. Defaults to false.
 encrypt = true
 # Path to output file. If it doesn't exist, it'll be created. If it exists, it'll be overwritten. Defaults to "backup.zip".
-dest = "backup.zip"
+dest = "/mnt/hdd/backup.zip"
 
 # You can specify as many sources as you want.
 [[sources]]
