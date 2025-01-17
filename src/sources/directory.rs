@@ -47,6 +47,16 @@ impl Source for DirectorySource {
             }
             builder = builder.overrides(overrides.build().unwrap())
         }
+        if self.config.max_file_size > 0. {
+            let s = self.config.max_file_size as u64;
+            builder = builder.filter_entry(move |e| {
+                if let Ok(x) = e.metadata() {
+                    x.is_dir() || x.len() <= s
+                } else {
+                    false
+                }
+            })
+        }
         let mut total_files = 0;
         let mut total_bytes = 0;
         let mut total_errors = 0;

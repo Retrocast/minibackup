@@ -62,6 +62,8 @@ pub struct DirectorySourceConfig {
     pub skip_hidden: bool,
     #[serde(default = "default_empty")]
     pub exclude: Vec<String>,
+    #[serde(default)]
+    pub max_file_size: f64,
 }
 
 #[derive(Deserialize, Debug)]
