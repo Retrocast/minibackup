@@ -21,9 +21,12 @@ Example config file and full config format reference:
 ```toml
 [archive]
 # Whether encrypt the archive.
-# If set to true, you will be prompted for password.
 # Optional, defaults to false.
 encrypt = true
+# Password used to encrypt the archive.
+# Optional.
+# If encrypt is set to true but password isn't specified, you will be prompted to enter password in terminal.
+password = "657374726F67656E"
 # Path to output file.
 # If it doesn't exist, it'll be created. If it exists, it'll be overwritten.
 # Optional, defaults to "backup.zip".
