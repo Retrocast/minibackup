@@ -18,11 +18,17 @@ fn main() {
         .create(true)
         .write(true)
         .truncate(true)
-        .open(cfg.archive.dest)
+        .open(&cfg.archive.dest)
         .unwrap();
     let mut zip = zip::ZipWriter::new(file);
     for x in cfg.sources {
         sources::archive_source(x, &mut zip, options.clone());
     }
     zip.finish().unwrap();
+    if let Ok(meta) = std::fs::metadata(&cfg.archive.dest) {
+        println!(
+            "📁 Final archive size - {}",
+            output::format_bytes(meta.len() as f64)
+        )
+    }
 }
