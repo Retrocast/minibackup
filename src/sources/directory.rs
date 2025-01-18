@@ -59,33 +59,61 @@ impl Source for DirectorySource {
         }
         let mut total_files = 0;
         let mut total_bytes = 0;
-        let mut total_errors = 0;
+        let mut archival_errors = 0;
+        let mut fs_errors = 0;
         let mut buf = vec![];
-        // TODO: Add proper error handling
+        // TODO: Add better error handling.
         for result in builder.build() {
             match result {
                 Ok(entry) => {
                     let entry_path = entry.path();
                     let zip_path = dest.join(entry_path.strip_prefix(&self.config.path).unwrap());
                     if entry_path.is_dir() {
-                        zip.add_directory_from_path(zip_path, options.clone())
-                            .unwrap();
+                        if zip
+                            .add_directory_from_path(zip_path, options.clone())
+                            .is_err()
+                        {
+                            archival_errors += 1;
+                        }
                     } else if entry_path.is_file() {
-                        zip.start_file_from_path(zip_path, options.clone()).unwrap();
-                        let mut f = File::open(entry_path).unwrap();
-                        f.read_to_end(&mut buf).unwrap();
-                        zip.write_all(&buf).unwrap();
+                        if zip.start_file_from_path(zip_path, options.clone()).is_err() {
+                            archival_errors += 1;
+                            continue;
+                        }
+                        let mut f = match File::open(entry_path) {
+                            Ok(f) => f,
+                            Err(_) => {
+                                fs_errors += 1;
+                                continue;
+                            }
+                        };
+                        if f.read_to_end(&mut buf).is_err() {
+                            fs_errors += 1;
+                            continue;
+                        }
+                        if zip.write_all(&buf).is_err() {
+                            archival_errors += 1;
+                            continue;
+                        }
                         total_files += 1;
                         total_bytes += buf.len();
                         buf.clear();
                     }
                 }
-                Err(_) => total_errors += 1,
+                Err(_) => fs_errors += 1,
             }
         }
+        let mut error_text = String::new();
+        if archival_errors > 0 {
+            error_text += &format!(" / {archival_errors} archival errors");
+        }
+        if fs_errors > 0 {
+            error_text += &format!(" / {fs_errors} filesystem errors");
+        }
         Ok(format!(
-            "{} ({total_files} files) / {total_errors} errors",
-            format_bytes(total_bytes as f64)
+            "{} ({total_files} files){}",
+            format_bytes(total_bytes as f64),
+            error_text
         ))
     }
 }
