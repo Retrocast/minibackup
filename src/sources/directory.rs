@@ -76,10 +76,6 @@ impl Source for DirectorySource {
                             archival_errors += 1;
                         }
                     } else if entry_path.is_file() {
-                        if zip.start_file_from_path(zip_path, options.clone()).is_err() {
-                            archival_errors += 1;
-                            continue;
-                        }
                         let mut f = match File::open(entry_path) {
                             Ok(f) => f,
                             Err(_) => {
@@ -89,6 +85,10 @@ impl Source for DirectorySource {
                         };
                         if f.read_to_end(&mut buf).is_err() {
                             fs_errors += 1;
+                            continue;
+                        }
+                        if zip.start_file_from_path(zip_path, options.clone()).is_err() {
+                            archival_errors += 1;
                             continue;
                         }
                         if zip.write_all(&buf).is_err() {
