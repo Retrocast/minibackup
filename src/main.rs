@@ -11,7 +11,9 @@ fn main() {
         .compression_level(Some(1));
     let password;
     if cfg.archive.encrypt {
-        password = passterm::prompt_password_tty(Some("Enter archive password:")).unwrap();
+        password = cfg.archive.password.unwrap_or_else(|| {
+            passterm::prompt_password_tty(Some("Enter archive password:")).unwrap()
+        });
         options = options.with_aes_encryption(zip::AesMode::Aes256, &password);
     }
     let file = fs::OpenOptions::new()

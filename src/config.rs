@@ -17,6 +17,7 @@ fn default_archive_dest() -> PathBuf {
 pub struct ArchiveConfig {
     #[serde(default)]
     pub encrypt: bool,
+    pub password: Option<String>,
     #[serde(default = "default_archive_dest")]
     pub dest: PathBuf,
 }
@@ -25,6 +26,7 @@ impl Default for ArchiveConfig {
     fn default() -> Self {
         Self {
             encrypt: false,
+            password: None,
             dest: default_archive_dest(),
         }
     }
