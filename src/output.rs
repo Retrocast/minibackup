@@ -4,7 +4,7 @@ fn flush() {
     let _ = stdout().flush();
 }
 
-const SUFFIX: [&'static str; 5] = ["B", "KB", "MB", "GB", "TB"];
+const SUFFIX: [&'static str; 5] = ["B", "KiB", "MiB", "GiB", "TiB"];
 
 pub fn format_bytes(size: f64) -> String {
     if size <= 0.0 {
