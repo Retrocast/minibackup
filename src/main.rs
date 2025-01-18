@@ -5,8 +5,7 @@ mod output;
 mod sources;
 
 fn main() {
-    let cfg: config::Config =
-        toml::from_str(&std::fs::read_to_string("config.toml").unwrap()).unwrap();
+    let cfg = config::load();
     let mut options = zip::write::FullFileOptions::default()
         .compression_method(zip::CompressionMethod::Zstd)
         .compression_level(Some(1));

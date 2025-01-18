@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fs, path::PathBuf, process::exit};
 
 use serde::Deserialize;
 
@@ -70,4 +70,27 @@ pub struct DirectorySourceConfig {
 pub struct FileSourceConfig {
     pub path: PathBuf,
     pub dest: Option<PathBuf>,
+}
+
+pub fn load() -> Config {
+    let args = std::env::args().collect::<Vec<_>>();
+    let path = if args.len() == 2 {
+        &args[1]
+    } else {
+        "config.toml"
+    };
+    let config = match fs::read_to_string(path) {
+        Ok(x) => x,
+        Err(e) => {
+            eprintln!("Failed to read config file: {e}");
+            exit(1);
+        }
+    };
+    match toml::from_str(&config) {
+        Ok(x) => x,
+        Err(e) => {
+            eprintln!("Failed to parse config file: {}", e.message());
+            exit(1);
+        }
+    }
 }
