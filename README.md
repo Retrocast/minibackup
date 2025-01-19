@@ -20,7 +20,7 @@ Example config file and full config format reference:
 
 ```toml
 [archive]
-# Whether encrypt the archive.
+# Whether to encrypt the archive.
 # Optional, defaults to false.
 encrypt = true
 # Password used to encrypt the archive.
@@ -53,7 +53,7 @@ type = "directory"
 path = "/home/user/Documents"
 # Where to put directory in archive.
 # Directories in path are supported too.
-# Optional, defaults to base folder name in archive root (e.g. "/Documents" in this example).
+# Optional, defaults to base directory name in archive root (e.g. "/Documents" in this example).
 dest = "docs"
 # Whether to skip files listed in .gitignore.
 # .gitignore files in subdirectories are supported too.
